@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtRevive - Sign Up</title>
+    <style>
+        /* Identical styling to login.html */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .auth-form button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+
+        .nav-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin: 10px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Create a New Account</h2>
+        <p>Sign up below to create an account</p>
+        <div class="error-message" id="errorMessage"></div>
+        <form class="auth-form" id="signupForm">
+            <input type="text" id="signupName" placeholder="Username" required>
+            <input type="email" id="signupEmail" placeholder="Email" required>
+            <input type="password" id="signupPassword" placeholder="Password" required>
+            <input type="password" id="signupConfirm" placeholder="Confirm Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <div class="nav-links">
+            <p>Already have an account? <a href="login.html">Login</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Same session check as login page
+        if(localStorage.getItem('currentUser')) {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirm').value;
+
+            // Same error handling pattern as login page
+            if(password !== confirmPassword) {
+                return showError('Passwords do not match');
+            }
+
+            const users = JSON.parse(localStorage.getItem('artrevive_users')) || [];
+            
+            if(users.some(u => u.email === email)) {
+                return showError('User already exists');
+            }
+
+            // Same storage pattern as login
+            const newUser = { name, email, password };
+            users.push(newUser);
+            localStorage.setItem('artrevive_users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            window.location.href = 'mainpage.html';
+        });
+
+        // Identical error display function
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => errorDiv.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>
